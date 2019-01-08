@@ -34,9 +34,9 @@ class JokeController {
 		return ['template' => 'jokes.html.php',
 				'title' => $title,
 				'variables' => [
-						'totalJokes' => $totalJokes,
-						'jokes' => $jokes
-					]
+					'totalJokes' => $totalJokes,
+					'jokes' => $jokes
+				]
 				];
 	}
 
@@ -49,7 +49,7 @@ class JokeController {
 	public function delete() {
 		$this->jokesTable->delete($_POST['id']);
 
-		header('location: index.php?action=list');
+		header('location: /joke/list');
 	}
 
 
@@ -62,7 +62,7 @@ class JokeController {
 
 			$this->jokesTable->save($joke);
 
-			header('location: index.php?action=list');
+			header('location: /joke/list');
 
 		}
 		else {
@@ -76,8 +76,8 @@ class JokeController {
 			return ['template' => 'editjoke.html.php',
 					'title' => $title,
 					'variables' => [
-							'joke' => $joke ?? null
-						]
+						'joke' => $joke ?? null
+					]
 					];
 		}
 	}

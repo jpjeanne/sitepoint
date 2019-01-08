@@ -1,34 +1,17 @@
 <?php
 
-function loadTemplate($templateFileName, $variables = []) {
-	extract($variables);
-	ob_start();
-	include  __DIR__ . '/../templates/' . $templateFileName;
-	return ob_get_clean();
-}
-
-
 try {
-	include __DIR__ . '/../includes/DatabaseConnection.php';
-	include __DIR__ . '/../classes/DatabaseTable.php';
-	include __DIR__ . '/../classes/controllers/JokeController.php';
+    include __DIR__ . '/../classes/EntryPoint.php';
 
-	$jokesTable = new DatabaseTable($pdo, 'joke', 'id');
-	$authorsTable = new DatabaseTable($pdo, 'author', 'id');
-	$jokeController = new JokeController($jokesTable, $authorsTable);
-	$action = $_GET['action'] ?? 'home';
-	$page = $jokeController->$action();
-	$title = $page['title'];
+    $route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 
-	if (isset($page['variables'])) {
-		$output = loadTemplate($page['template'], $page['variables']);
-	} else {
-		$output = loadTemplate($page['template']);
-	}
+    $entryPoint = new EntryPoint($route);
+    $entryPoint->run();
 } catch (PDOException $e) {
-	$title = 'An error has occurred';
-	$output = 'Database error: ' . $e->getMessage() . ' in ' .
-	$e->getFile() . ':' . $e->getLine();
-}
+    $title = 'An error has occurred';
 
-include  __DIR__ . '/../templates/layout.html.php';
+    $output = 'Database error: ' . $e->getMessage() . ' in '
+     . $e->getFile() . ':' . $e->getLine();
+
+    include  __DIR__ . '/../templates/layout.html.php';
+}
