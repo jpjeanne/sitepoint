@@ -1,15 +1,18 @@
 <?php
 
-class JokeController {
+class JokeController
+{
 	private $authorsTable;
 	private $jokesTable;
 
-	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable) {
+	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable)
+	{
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;
 	}
 
-	public function list() {
+	public function list()
+	{
 		$result = $this->jokesTable->findAll();
 
 		$jokes = [];
@@ -23,37 +26,39 @@ class JokeController {
 				'name' => $author['name'],
 				'email' => $author['email']
 			];
-
 		}
-
 
 		$title = 'Joke list';
 
 		$totalJokes = $this->jokesTable->total();
 
-		return ['template' => 'jokes.html.php',
-				'title' => $title,
-				'variables' => [
-					'totalJokes' => $totalJokes,
-					'jokes' => $jokes
-				]
-				];
+		return [
+			'template' => 'jokes.html.php',
+			'title' => $title,
+			'variables' => [
+				'totalJokes' => $totalJokes,
+				'jokes' => $jokes
+			]
+		];
 	}
 
-	public function home() {
+	public function home()
+	{
 		$title = 'Internet Joke Database';
 
 		return ['template' => 'home.html.php', 'title' => $title];
 	}
 
-	public function delete() {
+	public function delete()
+	{
 		$this->jokesTable->delete($_POST['id']);
 
 		header('location: /joke/list');
 	}
 
 
-	public function edit() {
+	public function edit()
+	{
 		if (isset($_POST['joke'])) {
 
 			$joke = $_POST['joke'];
@@ -64,8 +69,7 @@ class JokeController {
 
 			header('location: /joke/list');
 
-		}
-		else {
+		} else {
 
 			if (isset($_GET['id'])) {
 				$joke = $this->jokesTable->findById($_GET['id']);
@@ -73,12 +77,13 @@ class JokeController {
 
 			$title = 'Edit joke';
 
-			return ['template' => 'editjoke.html.php',
-					'title' => $title,
-					'variables' => [
-						'joke' => $joke ?? null
-					]
-					];
+			return [
+				'template' => 'editjoke.html.php',
+				'title' => $title,
+				'variables' => [
+					'joke' => $joke ?? null
+				]
+			];
 		}
 	}
 }
