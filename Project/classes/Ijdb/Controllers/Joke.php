@@ -77,7 +77,8 @@ class Joke
 
 	    $title = 'Edit joke';
 
-	    return ['template' => 'editjoke.html.php',
+	    return [
+			'template' => 'editjoke.html.php',
 	        'title' => $title,
 	        'variables' => [
 	            'joke' => $joke ?? null
@@ -85,33 +86,4 @@ class Joke
 	    ];
 	}
 
-	// public function edit()
-	// {
-	// 	if (isset($_POST['joke'])) {
-	//
-	// 		$joke = $_POST['joke'];
-	// 		$joke['jokedate'] = new DateTime();
-	// 		$joke['authorid'] = 1;
-	//
-	// 		$this->jokesTable->save($joke);
-	//
-	// 		header('location: /joke/list');
-	//
-	// 	} else {
-	//
-	// 		if (isset($_GET['id'])) {
-	// 			$joke = $this->jokesTable->findById($_GET['id']);
-	// 		}
-	//
-	// 		$title = 'Edit joke';
-	//
-	// 		return [
-	// 			'template' => 'editjoke.html.php',
-	// 			'title' => $title,
-	// 			'variables' => [
-	// 				'joke' => $joke ?? null
-	// 			]
-	// 		];
-	// 	}
-	// }
 }

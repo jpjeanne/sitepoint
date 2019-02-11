@@ -1,5 +1,4 @@
 <?php
 
-$params = $_SERVER['REQUEST_URI'];
+echo phpinfo();
 
-echo ltrim($params,'/'); 
