@@ -1,57 +1,63 @@
 <?php
 namespace Ninja;
 
-class EntryPoint
-{
-    private $route;
-    private $method;
-    private $routes;
+class EntryPoint {
+	private $route;
+	private $method;
+	private $routes;
 
-    // contructor type hints an interface. since ijdbController implements, we're good
-    public function __construct(string $route, string $method, \Ninja\Routes $routes) {
-        $this->route = $route;
-        $this->routes = $routes;
-        $this->method = $method;
-        $this->checkUrl();
-    }
+	public function __construct(string $route, string $method, \Ninja\Routes $routes) {
+		$this->route = $route;
+		$this->routes = $routes;
+		$this->method = $method;
+		$this->checkUrl();
+	}
 
-    private function checkUrl()
-    {
-        if ($this->route !== strtolower($this->route)) {
-            http_response_code(301);
-            header('location: ' . strtolower($this->route));
-        }
-    }
+	private function checkUrl() {
+		if ($this->route !== strtolower($this->route)) {
+			http_response_code(301);
+			header('location: ' . strtolower($this->route));
+		}
+	}
 
-    public function run() {
+	private function loadTemplate($templateFileName, $variables = []) {
+		extract($variables);
 
-        $routes = $this->routes->getRoutes();
+		ob_start();
+		include  __DIR__ . '/../../templates/' . $templateFileName;
 
-        $controller = $routes[$this->route][$this->method]['controller'];
-        $action = $routes[$this->route][$this->method]['action'];
+		return ob_get_clean();
+	}
 
-        $page = $controller->$action();
+	public function run() {
 
-        $title = $page['title'];
+		$routes = $this->routes->getRoutes();
 
-        if (isset($page['variables'])) {
-            $output = $this->loadTemplate($page['template'], $page['variables']);
-        } else {
-            $output = $this->loadTemplate($page['template']);
-        }
+		$authentication = $this->routes->getAuthentication();
 
-        include  __DIR__ . '/../../templates/layout.html.php';
-    }
+		if (isset($routes[$this->route]['login']) && isset($routes[$this->route]['login']) && !$authentication->isLoggedIn()) {
+			header('location: /login/error');
+		}
+		else {
+			$controller = $routes[$this->route][$this->method]['controller'];
+			$action = $routes[$this->route][$this->method]['action'];
+			$page = $controller->$action();
 
-    private function loadTemplate($templateFileName, $variables = [])
-    {
-        extract($variables);
+			$title = $page['title'];
 
-        ob_start();
-        // include  __DIR__ . '/../templates/' . $templateFileName;
-        include  __DIR__ . '/../../templates/' . $templateFileName;
+			if (isset($page['variables'])) {
+				$output = $this->loadTemplate($page['template'], $page['variables']);
+			}
+			else {
+				$output = $this->loadTemplate($page['template']);
+			}
 
-        return ob_get_clean();
-    }
+			echo $this->loadTemplate('layout.html.php', ['loggedIn' => $authentication->isLoggedIn(),
+			                                             'output' => $output,
+			                                             'title' => $title
+			                                            ]);
 
+		}
+
+	}
 }

@@ -1,3 +1,4 @@
+
 <p><?=$totalJokes?> jokes have been submitted to the Internet Joke Database.</p>
 
 <?php foreach($jokes as $joke): ?>
@@ -14,11 +15,14 @@ $date = new DateTime($joke['jokedate']);
 
 echo $date->format('jS F Y');
 ?>)
+
+<?php if ($userId == $joke['authorId']): ?>
   <a href="/joke/edit?id=<?=$joke['id']?>">Edit</a>
   <form action="/joke/delete" method="post">
     <input type="hidden" name="id" value="<?=$joke['id']?>">
     <input type="submit" value="Delete">
   </form>
+<?php endif; ?>
   </p>
 </blockquote>
 <?php endforeach; ?>

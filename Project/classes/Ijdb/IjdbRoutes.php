@@ -16,10 +16,12 @@ class IjdbRoutes implements \Ninja\Routes
         $this->authentication = new \Ninja\Authentication($this->authorsTable, 'email', 'password');
     }
 
-    public function getRoutes()
+    public function getRoutes(): array
     {
-        $jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable);
+        // $jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable);
+        $jokeController = new \Ijdb\Controllers\Joke($this->jokesTable, $this->authorsTable, $this->authentication);
         $authorController = new \Ijdb\Controllers\Register($this->authorsTable);
+        $loginController = new \Ijdb\Controllers\Login($this->authentication);
 
         $routes = [
 	        'author/register' => [
@@ -62,6 +64,35 @@ class IjdbRoutes implements \Ninja\Routes
 		            'action' => 'list'
 		        ]
 	        ],
+            'login' => [
+                'GET' => [
+                    'controller' => $loginController,
+                    'action' => 'loginForm'
+                ],
+                'POST' => [
+                    'controller' => $loginController,
+                    'action' => 'processLogin'
+                ]
+            ],
+            'login/error' => [
+                'GET' => [
+                    'controller' => $loginController,
+                    'action' => 'error'
+                ]
+            ],
+            'login/success' => [
+                'GET' => [
+                    'controller' => $loginController,
+                    'action' => 'success'
+                ],
+                'login' => true
+            ],
+            'logout' => [
+                'GET' => [
+                    'controller' => $loginController,
+                    'action' => 'logout'
+                ]
+            ],
 	        '' => [
 		        'GET' => [
 		            'controller' => $jokeController,
@@ -72,7 +103,7 @@ class IjdbRoutes implements \Ninja\Routes
         return $routes;
     }
 
-    public function getAuthentication()
+    public function getAuthentication(): \Ninja\Authentication
     {
         return $this->authentication;
     }
