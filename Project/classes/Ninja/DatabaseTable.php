@@ -14,14 +14,12 @@ class DatabaseTable
 		$this->primaryKey = $primaryKey;
 	}
 
-
 	private function query($sql, $parameters = [])
 	{
 		$query = $this->pdo->prepare($sql);
 		$query->execute($parameters);
 		return $query;
 	}
-
 
 	public function total()
 	{
@@ -35,9 +33,7 @@ class DatabaseTable
 	{
 		$query = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :value';
 
-		$parameters = [
-			'value' => $value
-		];
+		$parameters = ['value' => $value];
 
 		$query = $this->query($query, $parameters);
 
@@ -84,7 +80,6 @@ class DatabaseTable
 
 		$query .= ' WHERE `' . $this->primaryKey . '` = :primaryKey';
 
-		//Set the :primaryKey variable
 		$fields['primaryKey'] = $fields['id'];
 
 		$fields = $this->processDates($fields);
@@ -123,9 +118,7 @@ class DatabaseTable
 	{
 	    $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $column . ' = :value';
 
-	    $parameters = [
-	        'value' => $value
-	    ];
+	    $parameters = ['value' => $value];
 
 	    $query = $this->query($query, $parameters);
 

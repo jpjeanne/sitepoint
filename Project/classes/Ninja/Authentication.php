@@ -1,19 +1,22 @@
 <?php
 namespace Ninja;
 
-class Authentication {
+class Authentication
+{
 	private $users;
 	private $usernameColumn;
 	private $passwordColumn;
 
-	public function __construct(DatabaseTable $users, $usernameColumn, $passwordColumn) {
+	public function __construct(DatabaseTable $users, $usernameColumn, $passwordColumn)
+	{
 		session_start();
 		$this->users = $users;
 		$this->usernameColumn = $usernameColumn;
 		$this->passwordColumn = $passwordColumn;
 	}
 
-	public function login($username, $password) {
+	public function login($username, $password)
+	{
 		$user = $this->users->find($this->usernameColumn, strtolower($username));
 
 		if (!empty($user) && password_verify($password, $user[0][$this->passwordColumn])) {
@@ -21,13 +24,13 @@ class Authentication {
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $user[0][$this->passwordColumn];
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
 
-	public function isLoggedIn() {
+	public function isLoggedIn()
+	{
 		if (empty($_SESSION['username'])) {
 			return false;
 		}
@@ -36,17 +39,16 @@ class Authentication {
 
 		if (!empty($user) && $user[0][$this->passwordColumn] === $_SESSION['password']) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
 
-	public function getUser() {
+	public function getUser()
+	{
 		if ($this->isLoggedIn()) {
 			return $this->users->find($this->usernameColumn, strtolower($_SESSION['username']))[0];
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

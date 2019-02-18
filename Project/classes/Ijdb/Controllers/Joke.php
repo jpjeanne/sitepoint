@@ -3,17 +3,20 @@ namespace Ijdb\Controllers;
 use \Ninja\DatabaseTable;
 use \Ninja\Authentication;
 
-class Joke {
+class Joke
+{
 	private $authorsTable;
 	private $jokesTable;
 
-	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, Authentication $authentication) {
+	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable, Authentication $authentication)
+	{
 		$this->jokesTable = $jokesTable;
 		$this->authorsTable = $authorsTable;
 		$this->authentication = $authentication;
 	}
 
-	public function list() {
+	public function list()
+	{
 		$result = $this->jokesTable->findAll();
 
 		$jokes = [];
@@ -28,9 +31,7 @@ class Joke {
 				'email' => $author['email'],
 				'authorId' => $author['id']
 			];
-
 		}
-
 
 		$title = 'Joke list';
 
@@ -48,14 +49,15 @@ class Joke {
 				];
 	}
 
-	public function home() {
+	public function home()
+	{
 		$title = 'Internet Joke Database';
 
 		return ['template' => 'home.html.php', 'title' => $title];
 	}
 
-	public function delete() {
-
+	public function delete()
+	{
 		$author = $this->authentication->getUser();
 
 		$joke = $this->jokesTable->findById($_POST['id']);
@@ -64,15 +66,14 @@ class Joke {
 			return;
 		}
 
-
 		$this->jokesTable->delete($_POST['id']);
 
 		header('location: /joke/list');
 	}
 
-	public function saveEdit() {
+	public function saveEdit()
+	{
 		$author = $this->authentication->getUser();
-
 
 		if (isset($_GET['id'])) {
 			$joke = $this->jokesTable->findById($_GET['id']);
@@ -91,7 +92,8 @@ class Joke {
 		header('location: /joke/list');
 	}
 
-	public function edit() {
+	public function edit()
+	{
 		$author = $this->authentication->getUser();
 
 		if (isset($_GET['id'])) {
@@ -108,5 +110,4 @@ class Joke {
 					]
 				];
 	}
-
 }

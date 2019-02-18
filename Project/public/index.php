@@ -11,8 +11,7 @@ try {
 } catch (PDOException $e) {
     $title = 'An error has occurred';
 
-    $output = 'Database error: ' . $e->getMessage() . ' in '
-     . $e->getFile() . ':' . $e->getLine();
+    $output = 'Database error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
 
     include  __DIR__ . '/../templates/layout.html.php';
 }
